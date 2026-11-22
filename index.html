@@ -3,25 +3,42 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Krishna Kevlani | Vedic Astrologer</title>
-  <meta name="description" content="Krishna Kevlani is a Vedic astrologer offering kundli readings, kundli matching for marriage, career guidance, vastu and gemstone advice, in person and online.">
-  <meta name="theme-color" content="#0b0f24">
+  <title>Krishna Kevlani | Vedic Astrologer · The Cosmic Code</title>
+  <meta name="description" content="Krishna Kevlani (The Cosmic Code) is a Vedic astrologer offering kundli readings, kundli matching, career guidance, vastu, gemstone and numerology consultations online and in person.">
+  <meta name="theme-color" content="#05071a">
 
   <meta property="og:title" content="Krishna Kevlani | Vedic Astrologer">
-  <meta property="og:description" content="Clear, practical guidance from your birth chart. Book a consultation online or in person.">
-  <meta property="og:image" content="assets/krishna-kevlani.jpg">
+  <meta property="og:description" content="Decode the cosmic code of your life. Book a consultation online or in person.">
+  <meta property="og:image" content="assets/og-image.jpg">
   <meta property="og:type" content="website">
 
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/krishna-hero.webp" type="image/webp" fetchpriority="high">
   <link rel="stylesheet" href="styles.css">
-  <script>document.documentElement.classList.add("js")</script>
+
+  <script>
+    // Hide animated elements until the animation script takes over (fails open after 3s)
+    if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("js-anim");
+      setTimeout(() => {
+        if (!document.documentElement.classList.contains("anim-ready")) document.documentElement.classList.remove("js-anim");
+      }, 3000);
+    }
+  </script>
+  <script src="vendor/gsap.min.js" defer></script>
+  <script src="vendor/ScrollTrigger.min.js" defer></script>
+  <script type="module" src="cosmos.js"></script>
   <script src="script.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- 3D cosmos (three.js) sits behind the whole page -->
+  <canvas id="cosmos" aria-hidden="true"></canvas>
+  <div class="cursor-glow" aria-hidden="true"></div>
 
   <header class="site-header">
     <div class="header-inner container">
@@ -38,10 +55,10 @@
         <ul id="site-menu" class="site-menu" popover="auto">
           <li><a href="#about">About</a></li>
           <li><a href="#services">Services</a></li>
-          <li><a href="#process">How it works</a></li>
+          <li><a href="#rashis">Rashis</a></li>
           <li><a href="#consultations">Consultations</a></li>
           <li><a href="#faq">FAQ</a></li>
-          <li><a class="btn btn-gold btn-sm" href="#book">Book a reading</a></li>
+          <li><a class="btn btn-gold btn-sm magnetic" href="#book">Book a reading</a></li>
         </ul>
       </nav>
     </div>
@@ -50,77 +67,87 @@
   <main id="main">
     <!-- HERO -->
     <section class="hero" id="top">
-      <div class="stars" aria-hidden="true"></div>
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Vedic Astrologer · Kundli · Vastu · Numerology</p>
-          <h1>Clear guidance, <em>written in your stars</em></h1>
-          <p class="lead">I'm Krishna Kevlani. I read your birth chart to give you honest, practical answers about career, marriage, health and the timing of big decisions, without fear or false promises.</p>
-          <div class="hero-actions">
-            <a class="btn btn-gold" href="#book">Book a consultation</a>
-            <a class="btn btn-ghost" href="#services">Explore services</a>
+          <p class="eyebrow hero-anim">The Cosmic Code · Vedic Astrology</p>
+          <h1 class="hero-title">
+            <span class="line"><span>Decode the</span></span>
+            <span class="line"><span><em>cosmic code</em></span></span>
+            <span class="line"><span>of your life</span></span>
+          </h1>
+          <p class="lead hero-anim">I'm Krishna Kevlani. I read your birth chart to give you honest, practical answers about career, marriage, health and the timing of big decisions, without fear or false promises.</p>
+          <div class="hero-actions hero-anim">
+            <a class="btn btn-gold magnetic" href="#book">Book a consultation</a>
+            <a class="btn btn-ghost magnetic" href="#services">Explore services</a>
           </div>
-          <ul class="hero-stats" aria-label="At a glance">
-            <li><strong>7+</strong><span>Years of practice</span></li>
-            <li><strong>5,000+</strong><span>Charts read</span></li>
-            <li><strong>4.9/5</strong><span>Client rating</span></li>
+          <ul class="hero-stats hero-anim" aria-label="At a glance">
+            <li><strong><span class="count" data-to="7">7</span>+</strong><span>Years of practice</span></li>
+            <li><strong><span class="count" data-to="5000" data-format="comma">5,000</span>+</strong><span>Charts read</span></li>
+            <li><strong><span class="count" data-to="4.9" data-decimals="1">4.9</span>/5</strong><span>Client rating</span></li>
           </ul>
         </div>
 
-        <div class="hero-portrait">
-          <div class="zodiac-ring" aria-hidden="true">
-            <svg viewBox="0 0 400 400">
-              <defs>
-                <path id="ring-text" d="M200,200 m-172,0 a172,172 0 1,1 344,0 a172,172 0 1,1 -344,0"/>
-              </defs>
-              <circle cx="200" cy="200" r="190" fill="none" stroke="currentColor" stroke-opacity=".35"/>
-              <circle cx="200" cy="200" r="156" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-dasharray="2 6"/>
-              <text font-size="14" font-family="Inter, sans-serif" fill="currentColor" fill-opacity=".7"><textPath href="#ring-text" textLength="1070" lengthAdjust="spacing">ARIES ✦ TAURUS ✦ GEMINI ✦ CANCER ✦ LEO ✦ VIRGO ✦ LIBRA ✦ SCORPIO ✦ SAGITTARIUS ✦ CAPRICORN ✦ AQUARIUS ✦ PISCES ✦</textPath></text>
-            </svg>
+        <div class="hero-visual">
+          <div class="tilt-card" data-tilt>
+            <div class="tilt-inner">
+              <picture>
+                <source srcset="assets/krishna-hero.webp" type="image/webp">
+                <img src="assets/krishna-hero.jpg" alt="Krishna Kevlani studying a birth chart at his desk" width="560" height="490" fetchpriority="high">
+              </picture>
+              <div class="card-shine" aria-hidden="true"></div>
+            </div>
+            <p class="chip chip-a"><span class="dot" aria-hidden="true"></span> Taking bookings this week</p>
+            <p class="chip chip-b"><span aria-hidden="true">✦</span> Parashari Jyotish</p>
           </div>
-          <picture>
-            <source srcset="assets/krishna-kevlani.webp" type="image/webp">
-            <img src="assets/krishna-kevlani.jpg" alt="Portrait of astrologer Krishna Kevlani" width="720" height="900" fetchpriority="high">
-          </picture>
-          <p class="portrait-badge"><span class="dot" aria-hidden="true"></span> Taking bookings this week</p>
         </div>
       </div>
+
+      <a class="scroll-cue" href="#about" aria-label="Scroll to About">
+        <span aria-hidden="true"></span>
+      </a>
     </section>
 
-    <!-- TRUST STRIP -->
-    <section class="strip" aria-label="Consultation formats">
-      <ul class="container strip-list">
-        <li>Video call</li>
-        <li>Phone</li>
-        <li>WhatsApp</li>
-        <li>In person</li>
-        <li>Hindi · English</li>
-      </ul>
+    <!-- MARQUEE -->
+    <section class="marquee" aria-label="What I offer">
+      <div class="marquee-track">
+        <ul class="marquee-list">
+          <li>Kundli Reading</li><li>Kundli Matching</li><li>Career &amp; Finance</li><li>Vastu</li><li>Gemstones</li><li>Numerology</li><li>Muhurat</li><li>Love &amp; Marriage</li>
+        </ul>
+        <ul class="marquee-list" aria-hidden="true">
+          <li>Kundli Reading</li><li>Kundli Matching</li><li>Career &amp; Finance</li><li>Vastu</li><li>Gemstones</li><li>Numerology</li><li>Muhurat</li><li>Love &amp; Marriage</li>
+        </ul>
+      </div>
     </section>
 
     <!-- ABOUT -->
     <section class="section" id="about" aria-labelledby="about-heading">
       <div class="container about-grid">
-        <div class="about-visual reveal" aria-hidden="true">
-          <div class="chart-card">
+        <div class="about-visual" data-reveal>
+          <div class="about-photo parallax" data-speed="-0.08">
+            <picture>
+              <source srcset="assets/krishna-kevlani.webp" type="image/webp">
+              <img src="assets/krishna-kevlani.jpg" alt="Portrait of Krishna Kevlani" width="720" height="900" loading="lazy">
+            </picture>
+          </div>
+          <div class="kundli-float glass parallax" data-speed="0.12" aria-hidden="true">
             <svg viewBox="0 0 200 200" class="kundli">
               <rect x="10" y="10" width="180" height="180" fill="none" stroke="currentColor"/>
-              <path d="M10 10L190 190M190 10L10 190M100 10L10 100L100 190L190 100Z" fill="none" stroke="currentColor"/>
-              <g font-size="11" fill="currentColor" text-anchor="middle" font-family="Inter, sans-serif">
+              <path class="kundli-lines" d="M10 10L190 190M190 10L10 190M100 10L10 100L100 190L190 100Z" fill="none" stroke="currentColor"/>
+              <g font-size="12" fill="currentColor" text-anchor="middle" font-family="Inter, sans-serif">
                 <text x="100" y="62">Lg</text><text x="55" y="35">Su</text><text x="145" y="35">Mo</text>
                 <text x="35" y="104">Ma</text><text x="165" y="104">Ju</text><text x="100" y="146">Ve</text>
                 <text x="55" y="176">Sa</text><text x="145" y="176">Ra</text>
               </g>
             </svg>
-            <p>North Indian birth chart</p>
+            <p>Janma Kundli</p>
           </div>
         </div>
-        <div class="about-copy reveal">
-          <p class="eyebrow">About Krishna</p>
-          <h2 id="about-heading">Astrology as a tool for clarity, not fear</h2>
-          <p>I've studied Vedic (Jyotish) astrology since my teens, learning Parashari techniques, dasha systems and transits under traditional teachers. Today I help clients across India and abroad make sense of what's happening in their lives and plan for what's next.</p>
-          <p>Every reading is prepared from your exact birth details before we speak. You get a straightforward explanation of what your chart shows, the periods that matter, and simple remedies you can actually follow, whether that's a mantra, a habit or a practical step.</p>
-          <ul class="checks">
+        <div class="about-copy">
+          <p class="eyebrow" data-reveal>About Krishna</p>
+          <h2 id="about-heading" data-reveal>Astrology as a tool for <em>clarity</em>, not fear</h2>
+          <p data-reveal>I've studied Vedic (Jyotish) astrology since my teens, learning Parashari techniques, dasha systems and transits under traditional teachers. Today I help clients across India and abroad make sense of what's happening in their lives and plan for what's next.</p>
+          <p data-reveal>Every reading is prepared from your exact birth details before we speak. You get a straightforward explanation of what your chart shows, the periods that matter, and simple remedies you can actually follow.</p>
+          <ul class="checks" data-reveal-group>
             <li>Readings prepared personally, never auto-generated</li>
             <li>Honest answers, including the difficult ones</li>
             <li>Simple, affordable remedies with no pressure to buy</li>
@@ -131,51 +158,51 @@
     </section>
 
     <!-- SERVICES -->
-    <section class="section section-alt" id="services" aria-labelledby="services-heading">
+    <section class="section" id="services" aria-labelledby="services-heading">
       <div class="container">
-        <header class="section-head reveal">
-          <p class="eyebrow">Services</p>
-          <h2 id="services-heading">How I can help</h2>
-          <p>Choose a focused reading or a complete life analysis. Every service includes remedies and a follow-up for questions.</p>
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>Services</p>
+          <h2 id="services-heading" data-reveal>How I can <em>help</em></h2>
+          <p data-reveal>Choose a focused reading or a complete life analysis. Every service includes remedies and a follow-up for questions.</p>
         </header>
-        <ul class="cards">
-          <li class="card reveal">
-            <span class="card-icon" aria-hidden="true">☉</span>
+        <ul class="cards" data-reveal-group>
+          <li class="card glass" data-glow>
+            <span class="card-icon" aria-hidden="true">☉&#xFE0E;</span>
             <h3>Kundli Reading</h3>
             <p>A complete analysis of your birth chart: personality, strengths, life themes and the dasha periods ahead.</p>
           </li>
-          <li class="card reveal">
-            <span class="card-icon" aria-hidden="true">♡</span>
+          <li class="card glass" data-glow>
+            <span class="card-icon" aria-hidden="true">♡&#xFE0E;</span>
             <h3>Kundli Matching</h3>
             <p>Guna milan, manglik check and a deeper compatibility reading for marriage and long-term relationships.</p>
           </li>
-          <li class="card reveal">
-            <span class="card-icon" aria-hidden="true">♃</span>
+          <li class="card glass" data-glow>
+            <span class="card-icon" aria-hidden="true">♃&#xFE0E;</span>
             <h3>Career &amp; Finance</h3>
             <p>Job changes, business timing, investments and the right field for you, read from your 10th and 2nd houses.</p>
           </li>
-          <li class="card reveal">
-            <span class="card-icon" aria-hidden="true">☽</span>
+          <li class="card glass" data-glow>
+            <span class="card-icon" aria-hidden="true">☽&#xFE0E;</span>
             <h3>Love &amp; Relationships</h3>
             <p>Understand patterns, timing of marriage and how to strengthen the relationships that matter most.</p>
           </li>
-          <li class="card reveal">
-            <span class="card-icon" aria-hidden="true">⌂</span>
+          <li class="card glass" data-glow>
+            <span class="card-icon" aria-hidden="true">⌂&#xFE0E;</span>
             <h3>Vastu Consultation</h3>
             <p>Practical vastu corrections for homes, shops and offices, usually without demolition or major changes.</p>
           </li>
-          <li class="card reveal">
-            <span class="card-icon" aria-hidden="true">◆</span>
+          <li class="card glass" data-glow>
+            <span class="card-icon" aria-hidden="true">◆&#xFE0E;</span>
             <h3>Gemstone Guidance</h3>
             <p>Which gemstone suits your chart (and which to avoid), with weight, metal and wearing day.</p>
           </li>
-          <li class="card reveal">
+          <li class="card glass" data-glow>
             <span class="card-icon" aria-hidden="true">#</span>
             <h3>Numerology</h3>
             <p>Name corrections, lucky numbers and dates for launches, signings and important events.</p>
           </li>
-          <li class="card reveal">
-            <span class="card-icon" aria-hidden="true">✦</span>
+          <li class="card glass" data-glow>
+            <span class="card-icon" aria-hidden="true">✦&#xFE0E;</span>
             <h3>Muhurat</h3>
             <p>Auspicious timings for marriage, griha pravesh, vehicle purchase, new ventures and ceremonies.</p>
           </li>
@@ -183,48 +210,71 @@
       </div>
     </section>
 
+    <!-- RASHI 3D RING -->
+    <section class="rashis" id="rashis" aria-labelledby="rashis-heading">
+      <div class="rashis-pin">
+        <header class="section-head container">
+          <p class="eyebrow" data-reveal>The twelve rashis</p>
+          <h2 id="rashis-heading" data-reveal>Your Moon sign <em>tells the real story</em></h2>
+          <p data-reveal>Vedic astrology reads your rashi from the Moon's position at birth, not just the Sun. Don't know yours? I'll tell you in your first consultation.</p>
+        </header>
+        <div class="ring-stage">
+          <ul class="ring" style="--n: 12">
+            <li class="sign" style="--i: 0"><span class="glyph" aria-hidden="true">♈&#xFE0E;</span><strong>Mesha</strong><small>Aries · Mars</small></li>
+            <li class="sign" style="--i: 1"><span class="glyph" aria-hidden="true">♉&#xFE0E;</span><strong>Vrishabha</strong><small>Taurus · Venus</small></li>
+            <li class="sign" style="--i: 2"><span class="glyph" aria-hidden="true">♊&#xFE0E;</span><strong>Mithuna</strong><small>Gemini · Mercury</small></li>
+            <li class="sign" style="--i: 3"><span class="glyph" aria-hidden="true">♋&#xFE0E;</span><strong>Karka</strong><small>Cancer · Moon</small></li>
+            <li class="sign" style="--i: 4"><span class="glyph" aria-hidden="true">♌&#xFE0E;</span><strong>Simha</strong><small>Leo · Sun</small></li>
+            <li class="sign" style="--i: 5"><span class="glyph" aria-hidden="true">♍&#xFE0E;</span><strong>Kanya</strong><small>Virgo · Mercury</small></li>
+            <li class="sign" style="--i: 6"><span class="glyph" aria-hidden="true">♎&#xFE0E;</span><strong>Tula</strong><small>Libra · Venus</small></li>
+            <li class="sign" style="--i: 7"><span class="glyph" aria-hidden="true">♏&#xFE0E;</span><strong>Vrishchika</strong><small>Scorpio · Mars</small></li>
+            <li class="sign" style="--i: 8"><span class="glyph" aria-hidden="true">♐&#xFE0E;</span><strong>Dhanu</strong><small>Sagittarius · Jupiter</small></li>
+            <li class="sign" style="--i: 9"><span class="glyph" aria-hidden="true">♑&#xFE0E;</span><strong>Makara</strong><small>Capricorn · Saturn</small></li>
+            <li class="sign" style="--i: 10"><span class="glyph" aria-hidden="true">♒&#xFE0E;</span><strong>Kumbha</strong><small>Aquarius · Saturn</small></li>
+            <li class="sign" style="--i: 11"><span class="glyph" aria-hidden="true">♓&#xFE0E;</span><strong>Meena</strong><small>Pisces · Jupiter</small></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
     <!-- PROCESS -->
     <section class="section" id="process" aria-labelledby="process-heading">
       <div class="container">
-        <header class="section-head reveal">
-          <p class="eyebrow">How it works</p>
-          <h2 id="process-heading">From booking to clarity in four steps</h2>
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>How it works</p>
+          <h2 id="process-heading" data-reveal>From booking to <em>clarity</em> in four steps</h2>
         </header>
-        <ol class="steps">
-          <li class="step reveal">
-            <span class="step-num" aria-hidden="true">01</span>
-            <h3>Book a slot</h3>
-            <p>Pick a consultation type and send your request through the form or WhatsApp.</p>
+        <ol class="timeline">
+          <li class="t-step" data-reveal>
+            <span class="t-num" aria-hidden="true">01</span>
+            <div><h3>Book a slot</h3><p>Pick a consultation type and send your request through the form or WhatsApp.</p></div>
           </li>
-          <li class="step reveal">
-            <span class="step-num" aria-hidden="true">02</span>
-            <h3>Share birth details</h3>
-            <p>Date, exact time and place of birth. If you don't know your birth time, I can help rectify it.</p>
+          <li class="t-step" data-reveal>
+            <span class="t-num" aria-hidden="true">02</span>
+            <div><h3>Share birth details</h3><p>Date, exact time and place of birth. If you don't know your birth time, I can help rectify it.</p></div>
           </li>
-          <li class="step reveal">
-            <span class="step-num" aria-hidden="true">03</span>
-            <h3>Your consultation</h3>
-            <p>We talk through your chart and your questions on a call, video or in person.</p>
+          <li class="t-step" data-reveal>
+            <span class="t-num" aria-hidden="true">03</span>
+            <div><h3>Your consultation</h3><p>We talk through your chart and your questions on a call, video or in person.</p></div>
           </li>
-          <li class="step reveal">
-            <span class="step-num" aria-hidden="true">04</span>
-            <h3>Remedies &amp; follow-up</h3>
-            <p>You receive a written summary with remedies, plus a follow-up window for questions.</p>
+          <li class="t-step" data-reveal>
+            <span class="t-num" aria-hidden="true">04</span>
+            <div><h3>Remedies &amp; follow-up</h3><p>You receive a written summary with remedies, plus a follow-up window for questions.</p></div>
           </li>
         </ol>
       </div>
     </section>
 
-    <!-- CONSULTATIONS / PRICING -->
-    <section class="section section-alt" id="consultations" aria-labelledby="consult-heading">
+    <!-- CONSULTATIONS -->
+    <section class="section" id="consultations" aria-labelledby="consult-heading">
       <div class="container">
-        <header class="section-head reveal">
-          <p class="eyebrow">Consultations</p>
-          <h2 id="consult-heading">Choose your consultation</h2>
-          <p>Transparent pricing. No hidden charges, no upselling of remedies.</p>
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>Consultations</p>
+          <h2 id="consult-heading" data-reveal>Choose your <em>consultation</em></h2>
+          <p data-reveal>Transparent pricing. No hidden charges, no upselling of remedies.</p>
         </header>
-        <div class="plans">
-          <article class="plan reveal">
+        <div class="plans" data-reveal-group>
+          <article class="plan glass" data-glow>
             <h3>Quick Question</h3>
             <p class="price"><span>₹</span>1,100</p>
             <p class="plan-meta">15 min · call or WhatsApp</p>
@@ -235,7 +285,7 @@
             </ul>
             <a class="btn btn-ghost" href="#book" data-plan="Quick Question">Choose</a>
           </article>
-          <article class="plan plan-featured reveal">
+          <article class="plan plan-featured glass" data-glow>
             <p class="plan-tag">Most popular</p>
             <h3>Detailed Reading</h3>
             <p class="price"><span>₹</span>2,100</p>
@@ -248,7 +298,7 @@
             </ul>
             <a class="btn btn-gold" href="#book" data-plan="Detailed Reading">Choose</a>
           </article>
-          <article class="plan reveal">
+          <article class="plan glass" data-glow>
             <h3>Kundli Matching</h3>
             <p class="price"><span>₹</span>2,500</p>
             <p class="plan-meta">45 min · for both partners</p>
@@ -260,28 +310,28 @@
             <a class="btn btn-ghost" href="#book" data-plan="Kundli Matching">Choose</a>
           </article>
         </div>
-        <p class="note">Vastu site visits and muhurat are priced separately. <a href="#book">Ask for a quote.</a></p>
+        <p class="note" data-reveal>Vastu site visits and muhurat are priced separately. <a href="#book">Ask for a quote.</a></p>
       </div>
     </section>
 
     <!-- TESTIMONIALS -->
     <section class="section" id="testimonials" aria-labelledby="testimonials-heading">
       <div class="container">
-        <header class="section-head reveal">
-          <p class="eyebrow">Kind words</p>
-          <h2 id="testimonials-heading">What clients say</h2>
-          <p class="placeholder-note">Prototype placeholders: replace with real client reviews before launch.</p>
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>Kind words</p>
+          <h2 id="testimonials-heading" data-reveal>What clients <em>say</em></h2>
+          <p class="placeholder-note" data-reveal>Prototype placeholders: replace with real client reviews before launch.</p>
         </header>
-        <ul class="quotes">
-          <li class="quote reveal">
+        <ul class="quotes" data-reveal-group>
+          <li class="quote glass">
             <blockquote>“He explained my chart in simple language and the timing he gave for my job change was spot on. No fear, no long list of expensive remedies.”</blockquote>
             <p class="quote-by">Client name · City</p>
           </li>
-          <li class="quote reveal">
+          <li class="quote glass">
             <blockquote>“We did our kundli matching with Krishna ji. He was patient with both families and answered every question honestly.”</blockquote>
             <p class="quote-by">Client name · City</p>
           </li>
-          <li class="quote reveal">
+          <li class="quote glass">
             <blockquote>“The vastu changes were small and practical. Our shop feels completely different now.”</blockquote>
             <p class="quote-by">Client name · City</p>
           </li>
@@ -290,30 +340,30 @@
     </section>
 
     <!-- FAQ -->
-    <section class="section section-alt" id="faq" aria-labelledby="faq-heading">
+    <section class="section" id="faq" aria-labelledby="faq-heading">
       <div class="container narrow">
-        <header class="section-head reveal">
-          <p class="eyebrow">FAQ</p>
-          <h2 id="faq-heading">Questions, answered</h2>
+        <header class="section-head">
+          <p class="eyebrow" data-reveal>FAQ</p>
+          <h2 id="faq-heading" data-reveal>Questions, <em>answered</em></h2>
         </header>
-        <div class="accordion reveal">
-          <details>
+        <div class="accordion" data-reveal-group>
+          <details class="glass">
             <summary>What details do I need for a reading?</summary>
             <p>Your date of birth, exact time of birth and place of birth. For kundli matching, I need these details for both people.</p>
           </details>
-          <details>
+          <details class="glass">
             <summary>I don't know my exact birth time. Can I still get a reading?</summary>
             <p>Yes. I can do birth time rectification using key events in your life, or use a prashna (horary) chart for specific questions.</p>
           </details>
-          <details>
+          <details class="glass">
             <summary>Are consultations available online?</summary>
             <p>Yes. Most consultations happen over video call, phone or WhatsApp, so you can book from anywhere in India or abroad.</p>
           </details>
-          <details>
+          <details class="glass">
             <summary>Will I have to buy expensive remedies?</summary>
             <p>No. Remedies are usually mantras, daan, fasting or lifestyle changes. Gemstones are suggested only when your chart clearly supports them, and you're free to buy them anywhere.</p>
           </details>
-          <details>
+          <details class="glass">
             <summary>Is my information kept private?</summary>
             <p>Always. Your birth details and questions are used only for your reading and are never shared.</p>
           </details>
@@ -323,21 +373,20 @@
 
     <!-- BOOKING -->
     <section class="section book" id="book" aria-labelledby="book-heading">
-      <div class="stars" aria-hidden="true"></div>
       <div class="container book-grid">
-        <div class="book-copy reveal">
-          <p class="eyebrow">Book a reading</p>
-          <h2 id="book-heading">Let's look at your chart together</h2>
-          <p>Fill in the form and it opens WhatsApp with your request ready to send. I usually reply within a few hours.</p>
-          <ul class="contact-list">
+        <div class="book-copy">
+          <p class="eyebrow" data-reveal>Book a reading</p>
+          <h2 id="book-heading" data-reveal>Let's look at your <em>chart together</em></h2>
+          <p data-reveal>Fill in the form and it opens WhatsApp with your request ready to send. I usually reply within a few hours.</p>
+          <ul class="contact-list" data-reveal-group>
+            <li><span>Instagram</span><a href="https://www.instagram.com/the_cosmic_code_/" target="_blank" rel="noopener">@the_cosmic_code_</a></li>
             <li><span>WhatsApp / Call</span><a href="tel:+910000000000">+91 00000 00000</a></li>
             <li><span>Email</span><a href="mailto:hello@example.com">hello@example.com</a></li>
             <li><span>Hours</span>Mon–Sat, 10:00–19:00 IST</li>
-            <li><span>Location</span>City, India</li>
           </ul>
         </div>
 
-        <form class="book-form reveal" id="book-form" novalidate>
+        <form class="book-form glass" id="book-form" novalidate data-reveal>
           <div class="field">
             <label for="f-name">Full name</label>
             <input id="f-name" name="name" type="text" autocomplete="name" required>
@@ -386,17 +435,19 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="site-logo">
-        <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16 4l2.6 9.4L28 16l-9.4 2.6L16 28l-2.6-9.4L4 16l9.4-2.6z" fill="currentColor"/></svg>
-        <span>Krishna Kevlani</span>
-      </p>
-      <nav aria-label="Social">
-        <ul class="social">
-          <li><a href="#" aria-label="Instagram">Instagram</a></li>
-          <li><a href="#" aria-label="YouTube">YouTube</a></li>
-          <li><a href="#" aria-label="WhatsApp">WhatsApp</a></li>
-        </ul>
-      </nav>
+      <p class="footer-big" aria-hidden="true">The Cosmic Code</p>
+      <div class="footer-row">
+        <p class="site-logo">
+          <svg class="logo-mark" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="14" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16 4l2.6 9.4L28 16l-9.4 2.6L16 28l-2.6-9.4L4 16l9.4-2.6z" fill="currentColor"/></svg>
+          <span>Krishna Kevlani</span>
+        </p>
+        <nav aria-label="Social">
+          <ul class="social">
+            <li><a href="https://www.instagram.com/the_cosmic_code_/" target="_blank" rel="noopener">Instagram</a></li>
+            <li><a href="https://wa.me/910000000000" target="_blank" rel="noopener">WhatsApp</a></li>
+          </ul>
+        </nav>
+      </div>
       <p class="fine">© <span id="year">2026</span> Krishna Kevlani. Astrology offers guidance, not guarantees, and is not a substitute for medical, legal or financial advice.</p>
     </div>
   </footer>
